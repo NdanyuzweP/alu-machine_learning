@@ -1,20 +1,14 @@
 #!/usr/bin/env python3
 """
-This module is implementing logic of adding two array
-it has to add two element in the same  position
-itn the array
+    adds two arrays element-wise.
 """
 
 
 def add_arrays(arr1, arr2):
     """
-function add arrays that adds two arrays
-by adding two elements in the same position
+    arr1: list of ints/floats
+    arr2: list of ints/floats
     """
     if len(arr1) != len(arr2):
         return None
-
-    result = []
-    for num in range(len(arr1)):
-        result.append(arr1[num] + arr2[num])
-    return result
+    return [arr1[i] + arr2[i] for i in range(len(arr1))]
