@@ -33,4 +33,3 @@ def mean_cov(X):
     len_data = X.shape[0] - 1
     cov = np.dot(center_data.T, center_data) / len_data
     return mean, cov
-
