@@ -1,37 +1,21 @@
 #!/usr/bin/env python3
-
-"""
-neural network with minimum number of layers being
-2 nwurons and 1 hidden layer
-
+""" Neural Network
 """
 
 import numpy as np
 
 
 class NeuralNetwork:
-    """
-    Class that defines a neural network with one hidden layer
-    performing binary classification
+    """ Class that defines a neural network with one hidden layer performing
+        binary classification.
     """
 
     def __init__(self, nx, nodes):
-        """
-        nx is the number of input features to the neuron
-        nodes is the number of nodes found in the hidden layer
-        Private instance attributes:
-        __W1: The weights vector for the hidden layer. Upon instantiation,
-        it should be initialized using a random normal distribution.
-        __b1: The bias for the hidden layer. Upon instantiation,
-        it should be initialized with 0s.
-        __A1: The activated output for the hidden layer. Upon instantiation,
-        it should be initialized to 0.
-        __W2: The weights vector for the neuron. Upon instantiation,
-        it should be initialized using a random normal distribution.
-        __b2: The bias for the neuron. Upon instantiation,
-        it should be initialized to 0.
-        __A2: The activated output for the neuron. Upon instantiation,
-        it should be initialized to 0.
+        """ Instantiation function
+
+        Args:
+            nx (int): size of the input layer
+            nodes (_type_): _description_
         """
         if not isinstance(nx, int):
             raise TypeError('nx must be an integer')
@@ -46,49 +30,37 @@ class NeuralNetwork:
         self.__W1 = np.random.randn(nodes, nx)
         self.__b1 = np.zeros((nodes, 1))
         self.__A1 = 0
-
         self.__W2 = np.random.randn(1, nodes)
         self.__b2 = 0
         self.__A2 = 0
 
+    # getter functions
     @property
     def W1(self):
-        """
-        returns private instance attribute __W1
-        """
+        """Return weights vector for hidden layer"""
         return self.__W1
 
     @property
     def b1(self):
-        """
-        returns private instance attribute __b1
-        """
+        """Return bias for hidden layer"""
         return self.__b1
 
     @property
     def A1(self):
-        """
-        returns private instance attribute __A1
-        """
+        """Return activated output for hidden layer"""
         return self.__A1
 
     @property
     def W2(self):
-        """
-        returns private instance attribute __W2
-        """
+        """Return weights vector for output neuron"""
         return self.__W2
 
     @property
     def b2(self):
-        """
-        returns private instance attribute __b2
-        """
+        """Return bias for the output neuron"""
         return self.__b2
 
     @property
     def A2(self):
-        """
-        returns private instance attribute __A2
-        """
+        """Return activated output for output neuron"""
         return self.__A2

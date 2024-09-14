@@ -4,6 +4,7 @@
 
 import numpy as np
 import matplotlib.pyplot as plt
+import pickle
 
 
 class DeepNeuralNetwork:
@@ -70,10 +71,9 @@ class DeepNeuralNetwork:
 
         Args:
             X (numpy.array): Input array with
-            shape (nx, m) = (featurs, no of examples)
+            shape (nx, m) = (features, no of examples)
         """
         self.cache["A0"] = X
-        # print(self.cache)
         for i in range(1, self.L+1):
             # extract values
             W = self.weights['W'+str(i)]
@@ -81,23 +81,28 @@ class DeepNeuralNetwork:
             A = self.cache['A'+str(i - 1)]
             # do forward propagation
             z = np.matmul(W, A) + b
-            sigmoid = 1 / (1 + np.exp(-z))  # this is the output
+            if i != self.L:
+                A = 1 / (1 + np.exp(-z))  # sigmoid function
+            else:
+                A = np.exp(z) / np.sum(np.exp(z), axis=0)  # softmax function
             # store output to the cache
-            self.cache["A"+str(i)] = sigmoid
+            self.cache["A"+str(i)] = A
         return self.cache["A"+str(i)], self.cache
 
     def cost(self, Y, A):
-        """ Calculate the cost of the Neural Network.
+        """ Calculate the cost of the Neural Network \
+            using categorical cross-entropy.
 
         Args:
-            Y (numpy.array): Actual values
-            A (numpy.array): predicted values of the neural network
+            Y (numpy.array): Actual one-hot encoded \
+                labels with shape (classes, m)
+            A (numpy.array): Predicted probabilities \
+                from the output layer of the neural network
 
         Returns:
-            _type_: _description_
+            float: Categorical cross-entropy cost
         """
-        loss = -(Y * np.log(A) + (1 - Y) * np.log(1.0000001 - A))
-        cost = np.mean(loss)
+        cost = -np.sum(Y * np.log(A)) / Y.shape[1]
         return cost
 
     def evaluate(self, X, Y):
@@ -105,15 +110,18 @@ class DeepNeuralNetwork:
 
         Args:
             X (numpy.array): Input array
-            Y (numpy.array): Actual values
+            Y (numpy.array): Actual one-hot encoded labels
 
         Returns:
             prediction, cost: return predictions and costs
         """
         self.forward_prop(X)
         # get output of the neural network from the cache
-        output = self.cache.get("A" + str(self.L))
-        return np.where(output >= 0.5, 1, 0), self.cost(Y, output)
+        A = self.cache.get("A" + str(self.L))
+        # get the class with the highest probability
+        prediction = np.eye(A.shape[0])[np.argmax(A, axis=0)].T
+        cost = self.cost(Y, A)
+        return prediction, cost
 
     def gradient_descent(self, Y, cache, alpha=0.05):
         """ Calculate one pass of gradient descent on the neural network
@@ -190,3 +198,30 @@ class DeepNeuralNetwork:
             plt.title('Training Cost')
             plt.show()
         return self.evaluate(X, Y)
+
+    def save(self, filename):
+        """ Save the instance object to a file in pickle format
+
+        Args:
+            filename (_type_): _description_
+        """
+        if not filename.endswith(".pkl"):
+            filename += ".pkl"
+        with open(filename, 'wb') as f:
+            pickle.dump(self, f)
+
+    @staticmethod
+    def load(filename):
+        """ Load a pickled DeepNeuralNetwork object
+
+        Args:
+            filename (_type_): _description_
+
+        Returns:
+            _type_: _description_
+        """
+        try:
+            with open(filename, 'rb') as f:
+                return pickle.load(f)
+        except FileNotFoundError:
+            return None
