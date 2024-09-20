@@ -124,6 +124,7 @@ class DeepNeuralNetwork:
             alpha (float): learning rate
         """
         m = Y.shape[1]
+
         for i in range(self.L, 0, -1):
 
             A_prev = cache["A" + str(i - 1)]
